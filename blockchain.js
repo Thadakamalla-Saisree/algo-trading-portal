@@ -1,4 +1,4 @@
-﻿const config = require('./config');
+const config = require('./config');
 
 // Official USDT Contract Addresses
 const TRON_USDT_CONTRACT = 'TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t';

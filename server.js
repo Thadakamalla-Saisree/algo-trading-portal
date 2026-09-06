@@ -1,4 +1,4 @@
-﻿const express = require('express');
+const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const bcrypt = require('bcryptjs');
@@ -428,7 +428,7 @@ app.get('/admin', (req, res) => {
 });
 
 // Start Server
-app.listen(config.PORT, () => {
+app.listen(config.PORT, '0.0.0.0', () => {
   console.log(`\n========================================================`);
   console.log(`🚀 Algo Trading Unified Portal Server Active!`);
   console.log(`📡 URL: http://localhost:${config.PORT}`);

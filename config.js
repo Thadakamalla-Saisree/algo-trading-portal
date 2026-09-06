@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Algo Trading Portal - Unified Commercial Licensing & Payment Configuration
  */
 module.exports = {
