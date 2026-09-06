@@ -1,0 +1,27 @@
+{
+  "users": [
+    {
+      "id": "usr_1788708454819_hflsj",
+      "email": "trader_1788708454525@test.com",
+      "passwordHash": "$2a$10$GcpsqYythwqStqPI6uyfXu41lZwgVNBYrF41YFsNHGXzKTfPEqysq",
+      "deviceId": "",
+      "licenses": [
+        {
+          "id": "lic_1788708454918_2nxk4",
+          "product": "POLYMARKET_5M",
+          "licenseKey": "POLY-VIP-IYLL-WAJW-TWXT",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRyYWRlcl8xNzg4NzA4NDU0NTI1QHRlc3QuY29tIiwicHJvZHVjdCI6IlBPTFlNQVJLRVRfNU0iLCJsaWNlbnNlS2V5IjoiUE9MWS1WSVAtSVlMTC1XQUpXLVRXWFQiLCJpc1BhaWQiOnRydWUsImlzc3VlZEF0IjoxNzg4NzA4NDU0OTEzLCJpYXQiOjE3ODg3MDg0NTQsImV4cCI6MjEwNDA2ODQ1NH0.FwdMim9C8WQcSJla5gWEz6zsuqazEYgGfdrd8aY1fEE",
+          "network": "MANUAL_ADMIN",
+          "txid": "MANUAL_ADMIN_1788708454916",
+          "amount": 10,
+          "issuedAt": "2026-09-06T15:27:34.918Z",
+          "isActive": true
+        }
+      ],
+      "registeredAt": "2026-09-06T15:27:34.819Z"
+    }
+  ],
+  "usedTxids": [
+    "manual_admin_1788708454916"
+  ]
+}

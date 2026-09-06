@@ -1,0 +1,4 @@
+node_modules/
+video_audio_poly/
+*.log
+.DS_Store

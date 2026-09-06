@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Algo Trading Labs — Institutional Polymarket & Pocket Option Trading Extensions</title>
+  <meta name="description" content="Institutional quantitative trading Chrome extensions for Polymarket 5-Minute BTC Binary Prediction Markets and Pocket Option 1-Minute Binary Options. Only $10 each.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #060911;
+      --bg-card: rgba(13, 20, 36, 0.85);
+      --bg-card-hover: rgba(18, 28, 50, 0.95);
+      --border-color: rgba(30, 48, 77, 0.6);
+      --cyan: #00E5FF;
+      --green: #00E676;
+      --red: #FF1744;
+      --gold: #FFD600;
+      --purple: #8B5CF6;
+      --text-main: #F8FAFC;
+      --text-muted: #94A3B8;
+      --glow-cyan: 0 0 30px rgba(0, 229, 255, 0.25);
+      --glow-green: 0 0 30px rgba(0, 230, 118, 0.25);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      overflow-x: hidden;
+      line-height: 1.5;
+    }
+
+    .ambient-bg {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      pointer-events: none; z-index: -1;
+      background: 
+        radial-gradient(circle at 15% 20%, rgba(0, 229, 255, 0.08) 0%, transparent 40%),
+        radial-gradient(circle at 85% 70%, rgba(139, 92, 246, 0.08) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, rgba(0, 230, 118, 0.04) 0%, transparent 60%);
+    }
+
+    /* Navigation */
+    .navbar {
+      width: 100%;
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 18px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      background: rgba(6, 9, 17, 0.88);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+    }
+    .brand-icon {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px; color: #000; font-weight: 900;
+      box-shadow: 0 0 16px rgba(0, 229, 255, 0.4);
+    }
+    .brand-name {
+      font-size: 19px; font-weight: 900; color: #fff; letter-spacing: -0.5px;
+    }
+    .brand-name span { color: var(--cyan); }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 24px;
+    }
+    .nav-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 13px; font-weight: 600;
+      transition: color 0.2s;
+    }
+    .nav-link:hover { color: var(--cyan); }
+
+    .btn-nav-cta {
+      background: linear-gradient(135deg, var(--gold), #ff9100);
+      color: #060911;
+      font-size: 13px; font-weight: 900;
+      padding: 9px 18px; border-radius: 8px;
+      text-decoration: none; border: none;
+      cursor: pointer; transition: all 0.2s;
+      box-shadow: 0 0 16px rgba(255, 214, 0, 0.35);
+    }
+    .btn-nav-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 0 24px rgba(255, 214, 0, 0.6);
+    }
+
+    /* Container */
+    .container {
+      max-width: 1240px;
+      margin: 0 auto;
+      padding: 0 24px;
+    }
+
+    /* Hero Section */
+    .hero {
+      text-align: center;
+      padding: 65px 0 45px 0;
+      position: relative;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0, 229, 255, 0.1);
+      border: 1px solid rgba(0, 229, 255, 0.35);
+      border-radius: 30px;
+      padding: 6px 16px; font-size: 12px; font-weight: 800;
+      color: var(--cyan); letter-spacing: 0.5px; text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+    .hero h1 {
+      font-size: 50px; font-weight: 900;
+      line-height: 1.15; letter-spacing: -1.5px;
+      margin-bottom: 20px;
+      background: linear-gradient(180deg, #FFFFFF 30%, #94A3B8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero h1 span.highlight {
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero p {
+      font-size: 17px; color: var(--text-muted);
+      max-width: 740px; margin: 0 auto 36px auto;
+      line-height: 1.6;
+    }
+
+    .hero-cta-wrap {
+      display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;
+      margin-bottom: 40px;
+    }
+    .btn-hero-primary {
+      background: linear-gradient(135deg, var(--cyan), #0091ea);
+      color: #060911; font-size: 15px; font-weight: 800;
+      padding: 14px 26px; border-radius: 10px;
+      text-decoration: none; cursor: pointer; border: none;
+      box-shadow: 0 0 24px rgba(0, 229, 255, 0.4);
+      transition: all 0.2s;
+    }
+    .btn-hero-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 0 36px rgba(0, 229, 255, 0.65);
+    }
+    .btn-hero-secondary {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border-color);
+      color: #fff; font-size: 15px; font-weight: 700;
+      padding: 14px 26px; border-radius: 10px;
+      text-decoration: none; cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn-hero-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--cyan);
+    }
+
+    /* Market Pulse Ribbon */
+    .market-ribbon {
+      background: rgba(13, 20, 36, 0.7);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 24px;
+      display: flex; justify-content: space-around;
+      align-items: center; flex-wrap: wrap; gap: 20px;
+      margin-bottom: 60px;
+    }
+    .ribbon-item {
+      display: flex; align-items: center; gap: 10px;
+      font-size: 13px;
+    }
+    .ribbon-lbl { color: var(--text-muted); font-weight: 600; }
+    .ribbon-val { font-family: 'JetBrains Mono', monospace; font-weight: 700; }
+    .val-green { color: var(--green); }
+    .val-cyan { color: var(--cyan); }
+    .val-gold { color: var(--gold); }
+    .val-red { color: var(--red); }
+
+    /* Section Headers */
+    .section-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    .section-tag {
+      font-size: 11px; font-weight: 800; letter-spacing: 1.5px;
+      color: var(--cyan); text-transform: uppercase;
+      margin-bottom: 8px; display: block;
+    }
+    .section-title {
+      font-size: 34px; font-weight: 900; letter-spacing: -0.5px;
+      margin-bottom: 10px;
+    }
+    .section-desc {
+      font-size: 15px; color: var(--text-muted); max-width: 680px; margin: 0 auto;
+    }
+
+    /* Product Cards / Sections */
+    .product-showcase {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      padding: 38px;
+      margin-bottom: 50px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+    }
+    .product-showcase::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, var(--cyan), var(--purple), var(--green));
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.05fr;
+      gap: 36px;
+      align-items: center;
+    }
+
+    @media (max-width: 960px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .hero h1 { font-size: 36px; }
+      .product-showcase { padding: 22px; }
+    }
+
+    .prod-info-col h3 {
+      font-size: 26px; font-weight: 900; margin-bottom: 10px;
+      display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+    }
+    .badge-price {
+      background: rgba(0, 230, 118, 0.15);
+      border: 1px solid rgba(0, 230, 118, 0.4);
+      color: var(--green); font-size: 13px; font-weight: 800;
+      padding: 3px 10px; border-radius: 20px;
+    }
+    .prod-subtitle {
+      font-size: 14px; color: var(--cyan); font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .prod-desc {
+      font-size: 14px; color: var(--text-muted); line-height: 1.6;
+      margin-bottom: 22px;
+    }
+
+    .features-list {
+      list-style: none; margin-bottom: 28px;
+    }
+    .features-list li {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 13px; margin-bottom: 12px; line-height: 1.4;
+    }
+    .feature-icon {
+      color: var(--cyan); font-size: 14px; flex-shrink: 0; margin-top: 2px;
+    }
+    .features-list strong { color: #fff; }
+
+    /* Video Player Container */
+    .video-container {
+      background: #03060c;
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.7);
+    }
+    .video-container video {
+      width: 100%;
+      height: auto;
+      display: block;
+      outline: none;
+    }
+    .video-header {
+      background: rgba(13, 20, 36, 0.95);
+      padding: 10px 16px;
+      display: flex; justify-content: space-between; align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 11px; font-weight: 700; color: var(--cyan);
+    }
+
+    /* Pricing & Bundle Section */
+    .pricing-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 28px;
+      margin-bottom: 70px;
+    }
+    .pricing-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 18px;
+      padding: 34px 26px;
+      display: flex; flex-direction: column;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .pricing-card:hover {
+      transform: translateY(-4px);
+      border-color: var(--cyan);
+      box-shadow: var(--glow-cyan);
+    }
+    .pricing-card.bundle-featured {
+      border: 2px solid var(--gold);
+      background: linear-gradient(160deg, rgba(20, 28, 50, 0.95), rgba(12, 18, 32, 0.98));
+      box-shadow: 0 16px 48px rgba(255, 214, 0, 0.15);
+    }
+    .bundle-badge {
+      position: absolute;
+      top: -12px; left: 50%; transform: translateX(-50%);
+      background: linear-gradient(135deg, var(--gold), #ff9100);
+      color: #060911; font-size: 11px; font-weight: 900;
+      padding: 4px 16px; border-radius: 20px;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+
+    .plan-name { font-size: 20px; font-weight: 900; margin-bottom: 6px; }
+    .plan-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 20px; min-height: 38px; }
+    .plan-price {
+      font-size: 44px; font-weight: 900; color: #fff;
+      display: flex; align-items: baseline; gap: 6px;
+      margin-bottom: 22px;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .plan-price span.currency { font-size: 22px; color: var(--cyan); }
+    .plan-price span.period { font-size: 13px; color: var(--text-muted); font-weight: 500; }
+
+    .plan-features {
+      list-style: none; margin-bottom: 30px; flex-grow: 1;
+    }
+    .plan-features li {
+      font-size: 13px; color: #cbd5e1; margin-bottom: 11px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .plan-features li span.chk { color: var(--green); font-weight: 900; }
+
+    .btn-pricing {
+      width: 100%;
+      background: linear-gradient(135deg, var(--cyan), #0091ea);
+      color: #060911; font-size: 14px; font-weight: 800;
+      padding: 12px; border-radius: 8px;
+      border: none; cursor: pointer;
+      text-align: center; text-decoration: none;
+      transition: all 0.2s;
+    }
+    .btn-pricing:hover { filter: brightness(1.15); box-shadow: var(--glow-cyan); }
+    .btn-pricing-bundle {
+      background: linear-gradient(135deg, var(--gold), #ff9100);
+      color: #060911; font-weight: 900;
+    }
+
+    /* Checkout Modal */
+    .modal-backdrop {
+      display: none;
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(3, 6, 12, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 1000;
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .modal-card {
+      background: linear-gradient(145deg, rgba(15, 23, 42, 0.98), rgba(9, 14, 26, 0.98));
+      border: 1px solid var(--cyan);
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.85), var(--glow-cyan);
+      border-radius: 18px;
+      width: 480px; max-width: 95vw; max-height: 92vh;
+      overflow-y: auto; padding: 28px;
+      position: relative;
+    }
+    .btn-modal-close {
+      position: absolute; top: 18px; right: 18px;
+      background: transparent; border: none;
+      color: var(--text-muted); font-size: 20px;
+      cursor: pointer; transition: color 0.2s;
+    }
+    .btn-modal-close:hover { color: #fff; }
+
+    .modal-header { text-align: center; margin-bottom: 18px; }
+    .modal-badge {
+      display: inline-block; background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.4); color: var(--cyan);
+      font-size: 10px; font-weight: 800; padding: 4px 12px; border-radius: 20px;
+      margin-bottom: 8px; text-transform: uppercase;
+    }
+    .modal-title { font-size: 22px; font-weight: 900; margin-bottom: 4px; }
+    .modal-sub { font-size: 12px; color: var(--text-muted); }
+
+    .modal-tabs {
+      display: flex; background: rgba(0, 0, 0, 0.4);
+      border-radius: 8px; padding: 3px;
+      border: 1px solid var(--border-color);
+      margin-bottom: 16px;
+    }
+    .modal-tab-btn {
+      flex: 1; background: transparent; border: none;
+      color: var(--text-muted); font-size: 11px; font-weight: 700;
+      padding: 8px 4px; border-radius: 6px; cursor: pointer;
+      transition: all 0.2s; text-align: center;
+    }
+    .modal-tab-btn.active {
+      background: var(--cyan); color: #060911; font-weight: 800;
+    }
+
+    .form-group { margin-bottom: 14px; }
+    .form-label {
+      display: block; font-size: 11px; font-weight: 700;
+      color: #cbd5e1; margin-bottom: 6px; text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .form-input {
+      width: 100%; padding: 10px 12px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px; color: #fff; font-size: 13px;
+      outline: none; transition: border-color 0.2s;
+    }
+    .form-input:focus { border-color: var(--cyan); box-shadow: 0 0 10px rgba(0, 229, 255, 0.3); }
+
+    .net-selector { display: flex; gap: 8px; margin-bottom: 14px; }
+    .net-btn {
+      flex: 1; background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 8px; padding: 8px;
+      color: #cbd5e1; font-size: 11px; font-weight: 700;
+      cursor: pointer; text-align: center; transition: all 0.2s;
+    }
+    .net-btn.active {
+      background: rgba(0, 229, 255, 0.15);
+      border-color: var(--cyan); color: var(--cyan);
+    }
+
+    .deposit-box {
+      background: rgba(0, 0, 0, 0.4);
+      border: 1px dashed rgba(0, 229, 255, 0.3);
+      border-radius: 10px; padding: 12px;
+      text-align: center; margin-bottom: 14px;
+    }
+    .deposit-addr {
+      display: block; font-family: 'JetBrains Mono', monospace;
+      font-size: 11px; color: var(--cyan);
+      background: rgba(0, 0, 0, 0.6); padding: 8px;
+      border-radius: 6px; word-break: break-all;
+      margin: 6px 0 8px 0; user-select: all;
+    }
+    .btn-copy {
+      background: rgba(0, 229, 255, 0.15);
+      border: 1px solid rgba(0, 229, 255, 0.4);
+      color: var(--cyan); padding: 6px 12px;
+      border-radius: 6px; font-size: 11px; font-weight: 700;
+      cursor: pointer;
+    }
+    .qr-wrap {
+      display: flex; justify-content: center; margin-top: 10px;
+    }
+    .qr-wrap img {
+      width: 120px; height: 120px; border-radius: 8px;
+      background: #fff; padding: 6px;
+    }
+
+    .notice-box {
+      background: rgba(245, 158, 11, 0.1);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      color: #fbbf24; font-size: 11px; line-height: 1.4;
+      padding: 8px 10px; border-radius: 8px; text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .btn-submit-pay {
+      width: 100%;
+      background: linear-gradient(135deg, var(--cyan), #0091ea);
+      color: #060911; font-size: 14px; font-weight: 900;
+      padding: 12px; border-radius: 8px; border: none;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-submit-pay:hover { filter: brightness(1.15); box-shadow: var(--glow-cyan); }
+
+    .modal-status {
+      margin-top: 12px; font-size: 12px; font-weight: 700;
+      text-align: center; min-height: 18px;
+    }
+    .modal-status.error { color: var(--red); }
+    .modal-status.success { color: var(--green); }
+    .modal-status.info { color: var(--cyan); }
+
+    .license-result-box {
+      display: none;
+      background: rgba(0, 230, 118, 0.1);
+      border: 1px solid rgba(0, 230, 118, 0.3);
+      border-radius: 10px; padding: 14px;
+      margin-top: 14px; text-align: center;
+    }
+    .key-display {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 14px; font-weight: 800; color: var(--green);
+      background: rgba(0, 0, 0, 0.6); padding: 8px;
+      border-radius: 6px; margin: 8px 0; user-select: all;
+    }
+    .btn-download-direct {
+      display: block; width: 100%;
+      background: var(--green); color: #052e16;
+      font-size: 13px; font-weight: 900;
+      padding: 10px; border-radius: 6px;
+      text-decoration: none; margin-top: 10px;
+    }
+
+    /* License Lookup Section */
+    .lookup-section {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px; padding: 36px;
+      max-width: 680px; margin: 0 auto 70px auto;
+      text-align: center;
+    }
+    .lookup-form {
+      display: flex; gap: 10px; margin-top: 20px;
+    }
+    .lookup-input {
+      flex: 1; padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 8px; color: #fff; font-size: 14px;
+    }
+    .btn-lookup {
+      background: var(--cyan); color: #060911;
+      font-weight: 800; font-size: 14px;
+      padding: 0 24px; border-radius: 8px;
+      border: none; cursor: pointer;
+    }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border-color);
+      padding: 40px 0;
+      text-align: center;
+      font-size: 13px; color: var(--text-muted);
+    }
+    .footer-links {
+      display: flex; justify-content: center; gap: 20px; margin-bottom: 16px;
+    }
+    .footer-links a { color: var(--text-muted); text-decoration: none; }
+    .footer-links a:hover { color: var(--cyan); }
+  </style>
+</head>
+<body>
+  <div class="ambient-bg"></div>
+
+  <!-- Navbar -->
+  <header class="navbar">
+    <a href="#" class="brand">
+      <div class="brand-icon">⚡</div>
+      <div class="brand-name">ALGO <span>TRADING LABS</span></div>
+    </a>
+    <nav class="nav-links">
+      <a href="#polymarket" class="nav-link">Polymarket 5M</a>
+      <a href="#pocket-option" class="nav-link">Pocket Option</a>
+      <a href="#pricing" class="nav-link">Pricing & Bundle</a>
+      <a href="#lookup" class="nav-link">License Lookup</a>
+      <a href="/admin" class="nav-link">Admin</a>
+      <button class="btn-nav-cta" onclick="openCheckout('DUAL_BUNDLE')">Get Dual Bundle ($18)</button>
+    </nav>
+  </header>
+
+  <!-- Hero -->
+  <main class="container">
+    <section class="hero">
+      <div class="hero-badge">⚡ Institutional Quant Engineering • $10 Lifetime</div>
+      <h1>Algorithmic Precision For <br><span class="highlight">Prediction & Binary Markets</span></h1>
+      <p>
+        Stop guessing and eliminate retail drawdown. Our proprietary Chrome extensions inject institutional 
+        quantitative indicator confluences and sub-second execution directly onto your trading screen.
+      </p>
+      <div class="hero-cta-wrap">
+        <button class="btn-hero-primary" onclick="openCheckout('POLYMARKET_5M')">Get Polymarket Sniper ($10)</button>
+        <button class="btn-hero-secondary" onclick="openCheckout('POCKET_OPTION_1M')">Get Pocket Option Signal ($10)</button>
+        <button class="btn-hero-primary" style="background: linear-gradient(135deg, var(--gold), #ff9100);" onclick="openCheckout('DUAL_BUNDLE')">🔥 Get Both VIP Bundle ($18)</button>
+      </div>
+
+      <!-- Market Pulse Ribbon -->
+      <div class="market-ribbon">
+        <div class="ribbon-item">
+          <span class="ribbon-lbl">BINANCE BTC/USDT:</span>
+          <span class="ribbon-val val-green" id="pulse-btc">$75,420.50 ▲</span>
+        </div>
+        <div class="ribbon-item">
+          <span class="ribbon-lbl">QUANT INDICATORS:</span>
+          <span class="ribbon-val val-cyan">16 Confluence Pillars</span>
+        </div>
+        <div class="ribbon-item">
+          <span class="ribbon-lbl">EXECUTION SPEED:</span>
+          <span class="ribbon-val val-green">&lt; 180 ms</span>
+        </div>
+        <div class="ribbon-item">
+          <span class="ribbon-lbl">PRICING:</span>
+          <span class="ribbon-val val-gold">$10 / Tool (Lifetime)</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT 1: POLYMARKET BTC 5M SNIPER PRO -->
+    <section class="product-showcase" id="polymarket">
+      <div class="product-grid">
+        <div class="prod-info-col">
+          <span class="section-tag">EXTENSION 1 • POLYMARKET.COM</span>
+          <h3>Polymarket BTC 5M Sniper Pro <span class="badge-price">$10 USDT</span></h3>
+          <div class="prod-subtitle">Institutional 16-Pillar Indicator Suite & Live Execution HUD</div>
+          <p class="prod-desc">
+            Polymarket 5-minute Bitcoin Up/Down markets offer massive edge when you trade with real-time quantitative modeling. 
+            This extension connects directly to Binance spot tick order flow, synthesizes 16 indicators, detects order-book mispricings, 
+            and allows 1-click execution right inside Polymarket.
+          </p>
+
+          <ul class="features-list">
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Sub-Millisecond Binance Bridge:</strong> Zero-latency price-to-beat delta calculation in basis points.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>16-Pillar Indicator Suite:</strong> Quad EMA, SuperTrend, ADX/DMI, Linear Regression, Dual RSI, Stochastic, MACD, CCI, Bollinger Bands, Keltner, and Volume Delta.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Late-Round Sniper Logic:</strong> Triggers 90%+ probability setups in the final 60 seconds of every round.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>1-Click Order Sniping:</strong> Floating HUD with instant Yes/No trade targeting and audio chimes.</div>
+            </li>
+          </ul>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn-hero-primary" onclick="openCheckout('POLYMARKET_5M')">Buy Polymarket Sniper ($10)</button>
+            <a href="/download/polymarket-video.mp4" class="btn-hero-secondary">Download Video (MP4)</a>
+          </div>
+        </div>
+
+        <!-- Video Player Column -->
+        <div class="prod-media-col">
+          <div class="video-container">
+            <div class="video-header">
+              <span>▶ OFFICIAL WALKTHROUGH DEMO (720P HD)</span>
+              <span>POLYMARKET SNIPER</span>
+            </div>
+            <video controls preload="metadata">
+              <source src="/videos/polymarket-sniper-walkthrough.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCT 2: POCKET OPTION SIGNAL PRO -->
+    <section class="product-showcase" id="pocket-option">
+      <div class="product-grid">
+        <div class="prod-info-col">
+          <span class="section-tag">EXTENSION 2 • POCKETOPTION.COM</span>
+          <h3>Pocket Option Signal Pro <span class="badge-price">$10 USDT</span></h3>
+          <div class="prod-subtitle">1-Minute Binary Candlestick Confluence & Martingale Risk HUD</div>
+          <p class="prod-desc">
+            Engineered specifically for 1-minute binary options traders on Pocket Option. Eliminates emotional tilt and fake broker bots 
+            by calculating multi-oscillator confluence on every live candlestick with dynamic win-rate scoring and risk management.
+          </p>
+
+          <ul class="features-list">
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Real-Time M1 Candlestick Engine:</strong> Sub-second analysis of RSI, Stochastic, MACD, Bollinger Bands, and Moving Averages.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Institutional Confluence Score:</strong> Only signals trades when 5 or more technical algorithms align simultaneously.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Martingale & Risk Calculator:</strong> Built-in position sizing tracker to safeguard your balance.</div>
+            </li>
+            <li>
+              <span class="feature-icon">⚡</span>
+              <div><strong>Zero-Lag On-Chart HUD:</strong> Draggable, floating overlay directly on your broker screen.</div>
+            </li>
+          </ul>
+
+          <div style="display: flex; gap: 14px; flex-wrap: wrap;">
+            <button class="btn-hero-primary" onclick="openCheckout('POCKET_OPTION_1M')">Buy Pocket Option Signal ($10)</button>
+            <a href="/download/pocket-option-video.mp4" class="btn-hero-secondary">Download Video (MP4)</a>
+          </div>
+        </div>
+
+        <!-- Video Player Column -->
+        <div class="prod-media-col">
+          <div class="video-container">
+            <div class="video-header">
+              <span>▶ OFFICIAL WALKTHROUGH DEMO (720P HD)</span>
+              <span>POCKET SIGNAL PRO</span>
+            </div>
+            <video controls preload="metadata">
+              <source src="/videos/pocket-signal-pro-walkthrough.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING & BUNDLE SECTION -->
+    <section class="section-header" id="pricing">
+      <span class="section-tag">TRANSPARENT PRICING</span>
+      <h2 class="section-title">Simple One-Time Pricing. No Subscriptions.</h2>
+      <p class="section-desc">Every purchase grants you a lifetime cryptographic license with unlimited updates and full blockchain verification.</p>
+    </section>
+
+    <div class="pricing-grid">
+      <!-- Card 1: Polymarket -->
+      <div class="pricing-card">
+        <h4 class="plan-name">Polymarket BTC Sniper</h4>
+        <p class="plan-desc">For traders focused on Polymarket 5-minute Bitcoin binary prediction rounds.</p>
+        <div class="plan-price"><span class="currency">$</span>10 <span class="period">USDT / Lifetime</span></div>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> 16-Pillar Quantitative Indicator Engine</li>
+          <li><span class="chk">✓</span> Real-Time Binance BTC Tick Bridge</li>
+          <li><span class="chk">✓</span> 60s Late-Round Sniper Alerts</li>
+          <li><span class="chk">✓</span> 1-Click Order Execution Overlay</li>
+          <li><span class="chk">✓</span> Lifetime Updates & Priority Support</li>
+        </ul>
+        <button class="btn-pricing" onclick="openCheckout('POLYMARKET_5M')">Get Polymarket Extension ($10)</button>
+      </div>
+
+      <!-- Card 2: Pocket Option -->
+      <div class="pricing-card">
+        <h4 class="plan-name">Pocket Option Signal</h4>
+        <p class="plan-desc">For 1-minute binary options scalpers trading crypto and forex pairs on Pocket Option.</p>
+        <div class="plan-price"><span class="currency">$</span>10 <span class="period">USDT / Lifetime</span></div>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> Multi-Oscillator Confluence Engine</li>
+          <li><span class="chk">✓</span> High-Winrate 1-Minute Signal Alerts</li>
+          <li><span class="chk">✓</span> Integrated Martingale Risk Calculator</li>
+          <li><span class="chk">✓</span> Floating Non-Repainting HUD</li>
+          <li><span class="chk">✓</span> Lifetime Updates & Priority Support</li>
+        </ul>
+        <button class="btn-pricing" onclick="openCheckout('POCKET_OPTION_1M')">Get Pocket Option Extension ($10)</button>
+      </div>
+
+      <!-- Card 3: Dual Bundle (Featured) -->
+      <div class="pricing-card bundle-featured">
+        <div class="bundle-badge">🔥 BEST VALUE • SAVE $2</div>
+        <h4 class="plan-name" style="color: var(--gold);">Pro Trader Dual Bundle</h4>
+        <p class="plan-desc">Get BOTH institutional trading extensions under a unified lifetime license.</p>
+        <div class="plan-price" style="color: var(--gold);"><span class="currency">$</span>18 <span class="period">USDT / Lifetime</span></div>
+        <ul class="plan-features">
+          <li><span class="chk">✓</span> <strong>Polymarket BTC 5M Sniper Pro</strong> Included</li>
+          <li><span class="chk">✓</span> <strong>Pocket Option Signal Pro</strong> Included</li>
+          <li><span class="chk">✓</span> All 16 Polymarket Indicators + M1 Oscillator Suite</li>
+          <li><span class="chk">✓</span> Dual License Key Active for Both Platforms</li>
+          <li><span class="chk">✓</span> Instant Combined ZIP Package Download</li>
+          <li><span class="chk">✓</span> VIP Telegram Direct Developer Support</li>
+        </ul>
+        <button class="btn-pricing btn-pricing-bundle" onclick="openCheckout('DUAL_BUNDLE')">Get Dual Bundle ($18 USDT)</button>
+      </div>
+    </div>
+
+    <!-- SELF-SERVICE LICENSE LOOKUP -->
+    <section class="lookup-section" id="lookup">
+      <span class="section-tag">ALREADY PURCHASED?</span>
+      <h3 style="font-size: 24px; font-weight: 800; margin-bottom: 8px;">Retrieve Your License Keys & Downloads</h3>
+      <p style="font-size: 13px; color: var(--text-muted);">Enter your registered email address to instantly view all active licenses and download your files.</p>
+      
+      <form class="lookup-form" id="lookup-form" onsubmit="handleLookup(event)">
+        <input type="email" id="lookup-email" class="lookup-input" placeholder="Enter your registered email..." required />
+        <button type="submit" class="btn-lookup">Lookup</button>
+      </form>
+      <div id="lookup-results" style="margin-top: 20px; font-size: 13px;"></div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-links">
+        <a href="#polymarket">Polymarket Sniper</a>
+        <a href="#pocket-option">Pocket Option</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#lookup">License Lookup</a>
+        <a href="/admin">Admin Dashboard</a>
+      </div>
+      <p>© 2026 Algo Trading Labs. All rights reserved. Built for institutional performance.</p>
+    </div>
+  </footer>
+
+  <!-- CHECKOUT MODAL -->
+  <div class="modal-backdrop" id="checkout-modal">
+    <div class="modal-card">
+      <button class="btn-modal-close" onclick="closeCheckout()">✕</button>
+      <div class="modal-header">
+        <span class="modal-badge" id="modal-product-badge">POLYMARKET BTC SNIPER</span>
+        <h3 class="modal-title" id="modal-product-title">Instant Crypto Checkout</h3>
+        <p class="modal-sub" id="modal-product-sub">Send USDT on TRC20 or BEP20 for automated unlock.</p>
+      </div>
+
+      <!-- Product Picker Tabs -->
+      <div class="modal-tabs">
+        <button class="modal-tab-btn" id="modal-tab-poly" onclick="selectProduct('POLYMARKET_5M')">Polymarket ($10)</button>
+        <button class="modal-tab-btn" id="modal-tab-po" onclick="selectProduct('POCKET_OPTION_1M')">Pocket Option ($10)</button>
+        <button class="modal-tab-btn active" id="modal-tab-dual" onclick="selectProduct('DUAL_BUNDLE')">Dual Bundle ($18)</button>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Your Email (License Attached Here)</label>
+        <input type="email" id="checkout-email" class="form-input" placeholder="trader@example.com" required />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Select USDT Network</label>
+        <div class="net-selector">
+          <button class="net-btn active" id="net-trc20" onclick="selectNetwork('TRC20')">USDT (TRC-20 Tron)</button>
+          <button class="net-btn" id="net-bep20" onclick="selectNetwork('BEP20')">USDT (BEP-20 BSC BNB)</button>
+        </div>
+      </div>
+
+      <div class="deposit-box">
+        <span class="form-label">Send Exactly <strong id="checkout-price-amount" style="color: var(--gold);">18.00 USDT</strong> To:</span>
+        <span class="deposit-addr" id="checkout-address">TLXS78k5X6cB9zQHzDQeh4NtTddmj7Z8L7</span>
+        <button class="btn-copy" id="btn-copy-address" onclick="copyAddress()">📋 Copy Address</button>
+        <div class="qr-wrap">
+          <img id="checkout-qr" src="https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=TLXS78k5X6cB9zQHzDQeh4NtTddmj7Z8L7" alt="USDT QR Code" />
+        </div>
+      </div>
+
+      <div class="notice-box">
+        ⚡ 100% Automated On-Chain Verification. Paste your 64-character Transaction Hash (TxID) below after sending:
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Transaction Hash (TxID)</label>
+        <input type="text" id="checkout-txid" class="form-input" placeholder="Paste your TxID hash here..." />
+      </div>
+
+      <button class="btn-submit-pay" id="btn-submit-verify" onclick="submitPayment()">
+        ⚡ Verify On-Chain & Issue License
+      </button>
+
+      <div class="modal-status" id="modal-status"></div>
+
+      <!-- Success License Box -->
+      <div class="license-result-box" id="license-result-box">
+        <div style="font-weight: 800; color: var(--green);">🎉 Payment Verified On-Chain!</div>
+        <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">Your Tamper-Proof Lifetime License Key:</div>
+        <div class="key-display" id="result-license-key">POLY-VIP-XXXX-XXXX</div>
+        <a href="#" id="result-download-btn" class="btn-download-direct">⬇ Download Extension (.ZIP)</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const CONFIG = {
+      TRC20_ADDRESS: 'TLXS78k5X6cB9zQHzDQeh4NtTddmj7Z8L7',
+      BEP20_ADDRESS: '0x86c304c8015c1a51a520e66295ad75f85aa08b60',
+      PRICING: {
+        POLYMARKET_5M: 10.0,
+        POCKET_OPTION_1M: 10.0,
+        DUAL_BUNDLE: 18.0
+      }
+    };
+
+    let activeProduct = 'DUAL_BUNDLE';
+    let activeNetwork = 'TRC20';
+
+    function openCheckout(product) {
+      if (product) selectProduct(product);
+      document.getElementById('checkout-modal').style.display = 'flex';
+    }
+
+    function closeCheckout() {
+      document.getElementById('checkout-modal').style.display = 'none';
+      document.getElementById('modal-status').textContent = '';
+      document.getElementById('license-result-box').style.display = 'none';
+    }
+
+    function selectProduct(prod) {
+      activeProduct = prod;
+      document.getElementById('modal-tab-poly').classList.toggle('active', prod === 'POLYMARKET_5M');
+      document.getElementById('modal-tab-po').classList.toggle('active', prod === 'POCKET_OPTION_1M');
+      document.getElementById('modal-tab-dual').classList.toggle('active', prod === 'DUAL_BUNDLE');
+
+      const price = CONFIG.PRICING[prod] || 10.0;
+      document.getElementById('checkout-price-amount').textContent = price.toFixed(2) + ' USDT';
+
+      const names = {
+        POLYMARKET_5M: 'Polymarket BTC 5M Sniper ($10)',
+        POCKET_OPTION_1M: 'Pocket Option Signal Pro ($10)',
+        DUAL_BUNDLE: 'Pro Trader Dual VIP Bundle ($18)'
+      };
+      document.getElementById('modal-product-badge').textContent = names[prod];
+      updateDepositView();
+    }
+
+    function selectNetwork(net) {
+      activeNetwork = net;
+      document.getElementById('net-trc20').classList.toggle('active', net === 'TRC20');
+      document.getElementById('net-bep20').classList.toggle('active', net === 'BEP20');
+      updateDepositView();
+    }
+
+    function updateDepositView() {
+      const addr = activeNetwork === 'TRC20' ? CONFIG.TRC20_ADDRESS : CONFIG.BEP20_ADDRESS;
+      document.getElementById('checkout-address').textContent = addr;
+      document.getElementById('checkout-qr').src = `https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${addr}`;
+    }
+
+    function copyAddress() {
+      const addr = activeNetwork === 'TRC20' ? CONFIG.TRC20_ADDRESS : CONFIG.BEP20_ADDRESS;
+      navigator.clipboard.writeText(addr).then(() => {
+        const btn = document.getElementById('btn-copy-address');
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => { btn.textContent = '📋 Copy Address'; }, 2000);
+      });
+    }
+
+    async function submitPayment() {
+      const email = document.getElementById('checkout-email').value.trim();
+      const txid = document.getElementById('checkout-txid').value.trim();
+      const statusEl = document.getElementById('modal-status');
+      const submitBtn = document.getElementById('btn-submit-verify');
+
+      if (!email || !email.includes('@')) {
+        statusEl.textContent = 'Please enter a valid email address.';
+        statusEl.className = 'modal-status error';
+        return;
+      }
+      if (!txid || txid.length < 16) {
+        statusEl.textContent = 'Please enter a valid transaction hash (TxID).';
+        statusEl.className = 'modal-status error';
+        return;
+      }
+
+      submitBtn.disabled = true;
+      statusEl.textContent = `🔍 Querying ${activeNetwork} blockchain for ${CONFIG.PRICING[activeProduct]} USDT...`;
+      statusEl.className = 'modal-status info';
+
+      try {
+        const res = await fetch('/api/submit-payment', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email,
+            network: activeNetwork,
+            txid,
+            product: activeProduct
+          })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success) {
+          statusEl.textContent = '✓ Blockchain Payment Confirmed!';
+          statusEl.className = 'modal-status success';
+
+          document.getElementById('license-result-box').style.display = 'block';
+          document.getElementById('result-license-key').textContent = data.licenseKey;
+          
+          const dlBtn = document.getElementById('result-download-btn');
+          dlBtn.href = data.downloadUrl || '/download/dual-bundle.zip';
+          dlBtn.textContent = `⬇ Download ${data.product || 'Extension'} (.ZIP)`;
+        } else {
+          statusEl.textContent = data.error || 'Verification failed. Please check your TxID.';
+          statusEl.className = 'modal-status error';
+          submitBtn.disabled = false;
+        }
+      } catch (err) {
+        statusEl.textContent = 'Connection error. Please try again.';
+        statusEl.className = 'modal-status error';
+        submitBtn.disabled = false;
+      }
+    }
+
+    async function handleLookup(e) {
+      e.preventDefault();
+      const email = document.getElementById('lookup-email').value.trim();
+      const resEl = document.getElementById('lookup-results');
+
+      resEl.textContent = 'Searching for active licenses...';
+      try {
+        const res = await fetch('/api/license/lookup', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (res.ok && data.success && data.licenses.length > 0) {
+          let html = `<div style="color: var(--green); font-weight: 800; margin-bottom: 10px;">Found ${data.licenses.length} Active License(s):</div>`;
+          data.licenses.forEach(lic => {
+            html += `
+              <div style="background: rgba(0,0,0,0.5); padding: 12px; border-radius: 8px; margin-bottom: 8px; text-align: left; border: 1px solid var(--border-color);">
+                <div style="font-weight: 700; color: var(--cyan);">${lic.product}</div>
+                <div style="font-family: monospace; color: #fff; font-size: 13px; margin: 4px 0;">Key: <strong>${lic.licenseKey}</strong></div>
+                <a href="${lic.downloadUrl}" style="color: var(--green); font-weight: 700; font-size: 12px;">⬇ Download Extension (.ZIP)</a>
+              </div>
+            `;
+          });
+          resEl.innerHTML = html;
+        } else {
+          resEl.innerHTML = `<span style="color: var(--red);">${data.error || 'No active licenses found for this email.'}</span>`;
+        }
+      } catch (err) {
+        resEl.innerHTML = `<span style="color: var(--red);">Lookup failed. Try again later.</span>`;
+      }
+    }
+
+    setInterval(() => {
+      const pulseEl = document.getElementById('pulse-btc');
+      if (pulseEl) {
+        const base = 75420.00;
+        const delta = (Math.random() - 0.48) * 15.0;
+        const newPrice = (base + delta).toFixed(2);
+        pulseEl.textContent = `$${parseFloat(newPrice).toLocaleString()} ${delta >= 0 ? '▲' : '▼'}`;
+        pulseEl.className = 'ribbon-val ' + (delta >= 0 ? 'val-green' : 'val-red');
+      }
+    }, 2000);
+  </script>
+</body>
+</html>

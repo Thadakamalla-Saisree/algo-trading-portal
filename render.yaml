@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: algo-trading-portal
+    runtime: node
+    plan: free
+    region: oregon
+    buildCommand: npm install
+    startCommand: node server.js
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: NODE_ENV
+        value: production
+      - key: TRC20_ADDRESS
+        value: TLXS78k5X6cB9zQHzDQeh4NtTddmj7Z8L7
+      - key: BEP20_ADDRESS
+        value: "0x86c304c8015c1a51a520e66295ad75f85aa08b60"
+      - key: ADMIN_PASSWORD
+        value: Saisree1722$
+      - key: JWT_SECRET
+        generateValue: true
