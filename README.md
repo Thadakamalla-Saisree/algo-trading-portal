@@ -75,3 +75,5 @@ node server.js
 - **`public/downloads/`**: Pre-packaged `.zip` files for both extensions and the combined dual bundle.
 - **`blockchain.js`**: Direct blockchain queries to Tronscan API (TRC-20) and Binance Smart Chain RPC (BEP-20).
 - **`server.js`**: Express server managing crypto payments, JWT issuance, and file delivery.
+
+<!-- Cloudflare Auto-Build Trigger: 2026-09-12T11:27:34.638Z -->
