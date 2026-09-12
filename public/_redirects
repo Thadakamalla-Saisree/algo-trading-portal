@@ -1,4 +1,6 @@
-/api/* https://algo-trading-portal.onrender.com/api/:splat 200
-/download/* https://algo-trading-portal.onrender.com/download/:splat 200
-/admin https://algo-trading-portal.onrender.com/admin 200
-/health https://algo-trading-portal.onrender.com/health 200
+/download/polymarket-video.mp4 /videos/polymarket-sniper-walkthrough.mp4 200
+/download/pocket-option-video.mp4 /videos/pocket-signal-pro-walkthrough.mp4 200
+/download/polymarket-extension.zip /downloads/polymarket-btc-sniper.zip 200
+/download/pocket-option-extension.zip /downloads/pocket-signal-pro.zip 200
+/download/dual-bundle.zip /downloads/algo-trading-dual-bundle.zip 200
+/admin /admin.html 200
