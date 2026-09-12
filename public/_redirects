@@ -1,0 +1,4 @@
+/api/* https://algo-trading-portal.onrender.com/api/:splat 200
+/download/* https://algo-trading-portal.onrender.com/download/:splat 200
+/admin https://algo-trading-portal.onrender.com/admin 200
+/health https://algo-trading-portal.onrender.com/health 200
