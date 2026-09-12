@@ -19,9 +19,50 @@
         }
       ],
       "registeredAt": "2026-09-06T15:27:34.819Z"
+    },
+    {
+      "id": "usr_1789213656785_ybb8o",
+      "email": "owner@vip.algo",
+      "passwordHash": "hashed_pass",
+      "deviceId": "",
+      "licenses": [],
+      "registeredAt": "2026-09-12T11:47:36.785Z"
+    },
+    {
+      "id": "usr_1789213880302_0hdh6",
+      "email": "owner@algo-sniper.pro",
+      "passwordHash": null,
+      "deviceId": "",
+      "licenses": [
+        {
+          "id": "lic_1789213880303_s9yiq",
+          "product": "POLYMARKET_5M",
+          "licenseKey": "POLY-VIP-PRO-2026-LIFETIME",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im93bmVyQGFsZ28tc25pcGVyLnBybyIsInByb2R1Y3QiOiJQT0xZTUFSS0VUXzVNIiwibGljZW5zZUtleSI6IlBPTFktVklQLVBSTy0yMDI2LUxJRkVUSU1FIiwiaXNQYWlkIjp0cnVlLCJpYXQiOjE3ODkyMTM4ODB9.93C_slSWNuT4zedpdwKEIVyMtHHT095GsY-SJjNFZe8",
+          "network": "OWNER_VIP",
+          "txid": "TXID_VIP_POLY_01",
+          "amount": 10,
+          "issuedAt": "2026-09-12T11:51:20.303Z",
+          "isActive": true
+        },
+        {
+          "id": "lic_1789213880305_9ajvb",
+          "product": "DUAL_BUNDLE",
+          "licenseKey": "DUAL-VIP-PRO-2026-ALLACCESS",
+          "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im93bmVyQGFsZ28tc25pcGVyLnBybyIsInByb2R1Y3QiOiJEVUFMX0JVTkRMRSIsImxpY2Vuc2VLZXkiOiJEVUFMLVZJUC1QUk8tMjAyNi1BTExBQ0NFU1MiLCJpc1BhaWQiOnRydWUsImlhdCI6MTc4OTIxMzg4MH0.GW_bJC7iigBV069ofOWh8k243N5EemUDblgaHvRlQ80",
+          "network": "OWNER_VIP",
+          "txid": "TXID_VIP_DUAL_01",
+          "amount": 18,
+          "issuedAt": "2026-09-12T11:51:20.305Z",
+          "isActive": true
+        }
+      ],
+      "registeredAt": "2026-09-12T11:51:20.302Z"
     }
   ],
   "usedTxids": [
-    "manual_admin_1788708454916"
+    "manual_admin_1788708454916",
+    "txid_vip_poly_01",
+    "txid_vip_dual_01"
   ]
 }
